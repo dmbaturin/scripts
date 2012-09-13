@@ -76,6 +76,7 @@ case "$OS" in
            RAW_DATE=`stat --format "%y" /root/install.log`
            INSTALL_DATE=`date -d "$RAW_DATE" +"$DATE_FORMAT"`
            SOURCE="Installer log"
+           result
         fi
 
         ## No luck with good methods.
