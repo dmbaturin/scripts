@@ -46,7 +46,7 @@ print HANDLE $code;
 close( HANDLE );
 
 my $cc_output = `$CC -o $file_name $src_file_name`;
-#unlink($src_file_name);
+unlink($src_file_name);
 print "$cc_output";
 
 if( $? == 0 )
