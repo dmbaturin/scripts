@@ -14,3 +14,6 @@ File list:
 
 * ceval.pl
     Compiles and executes C one-liners with gcc (like ./ceval.pl 'int a = 5 % 2 == 0 ? 1 : 0; printf("%d\n", a);'
+
+* maya_timestamp.py
+    Converts UNIX timestamp to the Maya calendar date, like "./maya_timestamp.py $(date +%s)".
