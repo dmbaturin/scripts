@@ -125,6 +125,9 @@ class MayaDate:
         The most widely accepted hypothesis suggests it was
         August 11, 3114 BC gregorian date. In this case UNIX epoch
         starts on 12.17.16.7.5, 13 Chikchan, 3 K'ank'in
+
+        It's known as Goodman-Martinez-Thompson (GMT) correlation
+        constant.
     """
     start_days = 1856305
 
@@ -197,8 +200,11 @@ class MayaDate:
     def date(self):
         return("%s, %s, %s" % ( self.long_count_date(), self.tzolkin_date(), self.haab_date() ))
 
-
-timestamp = sys.argv[1]
+try: 
+    timestamp = sys.argv[1]
+except:
+    print "Please specify timestamp in the argument"
+    sys.exit(1)
 
 maya_date = MayaDate(timestamp)
 print maya_date.date()
