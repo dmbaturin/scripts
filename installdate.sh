@@ -41,7 +41,7 @@ else
     DATE_FORMAT="%F"
 fi
 
-if [ "$USER" != "root" ]; then
+if [ `id -u` != 0 ]; then
     echo "Some checks require root privileges!"
     exit 1
 fi
