@@ -3,7 +3,8 @@
 # and remember one won't live forever
 #
 # Let's implement it in a modern environment
-function clock() {
+function clock()
+{
 
     mottos=(
               "Vulnerant omnes, ultima necat"    # "Each [hour] hurts, the last one kills"
