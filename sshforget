@@ -1,0 +1,15 @@
+#!/bin/sh
+
+LINE=$1
+if [ -z $1 ]; then
+    echo "Please specify line number to remove from file"
+    exit 1
+fi
+
+if [ -z $2 ]; then
+    FILE=~/.ssh/known_hosts
+else
+    FILE=$2
+fi
+
+cat $FILE | awk -F '\n' -v "LINE=$LINE" '{if(NR != LINE) print $0}' | tee $FILE > /dev/null
