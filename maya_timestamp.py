@@ -22,15 +22,18 @@
 
 import sys
 
-class MayaDate:
+class MayaDate(object):
     """ Converts number of days since UNIX epoch
         to the Maya calendar date.
+
+        Ancient Maya people used three independent calendars for
+        different purposes.
+
+        Long count calendar is for recording historical events.
+        It and represents the number of days passed
+        since some date in the past the Maya believed is the day
+        our world was created.
           
-        Maya calendar is actually three independent calendars.
-        The long count calendar is for historical events, its 
-        date represents number of days since some date in the
-        past the Maya believed is the date of creation of our world.
-         
         Tzolkin calendar is for religious purposes, it has
         two independent cycles of 13 and 20 days, where 13 day
         cycle days are numbered, and 20 day cycle days are named.
@@ -41,25 +44,26 @@ class MayaDate:
 
         The smallest unit of long count calendar is one day (kin)
      
-        The long count calendar uses five cycles with base 18 or 20.
-
-        Classical long count calendar wraps around every 13 baktun,
-        but modern researchers commonly use longer cycles instead,
-        like piktun = 20 baktun
-
-        Long count date is written as five dot separated groups
-        from longest to shortest cycle,
-            <baktun>.<katun>.<tun>.<uinal>.<kin>
-        e.g. 13.0.0.9.2
     """
 
+    """ The long count calendar uses five different base 18 or base 20
+        cycles. Long-count date is writtin in dot separated format
+        from longest to shortest cycle,
+            <baktun>.<katun>.<tun>.<winal>.<kin>
+        for example, "13.0.0.9.2".
+
+        Classic version actually used by the ancient Maya wraps around
+        every 13th baktun, but modern researchers often use longer cycles
+        such as piktun = 20 baktun.
+
+    """
     kin    = 1
-    winal  = 20
-    tun    = 360     # 18 uinal
+    winal  = 20      # 20 kin
+    tun    = 360     # 18 winal
     katun  = 7200    # 20 tun
     baktun = 144000  # 20 katun
 
-    """ Tzolk'in date is composed from two independent cycles.
+    """ Tzolk'in date is composed of two independent cycles.
         Dates repeat every 260 days, 13 Ajaw is considered the end
         of tzolk'in.
 
@@ -92,7 +96,8 @@ class MayaDate:
         do not really belong to any month, but we think of them as a pseudo-month
         for convenience.
 
-        Also, note that days of the month are numbered from 0, not from 1.
+        Also, note that days of the month are actually numbered from 0, not from 1,
+        it's not for technical reasons.
     """
     haab_months = { 0: "Pop",
                     1: "Wo'",
@@ -119,8 +124,7 @@ class MayaDate:
         calendar (0.0.0.0.0, 4 Ajaw, 8 Kumk'u).
 
         The problem with mapping the long count calendar to
-        any other is that exact date of other calendars when 
-        it starts is not known exactly.
+        any other is that its start date is not known exactly.
 
         The most widely accepted hypothesis suggests it was
         August 11, 3114 BC gregorian date. In this case UNIX epoch
@@ -138,27 +142,27 @@ class MayaDate:
         if timestamp is None:
             self.days = self.start_days
         else:
-            self.days = self.start_days + (int(timestamp) / self.seconds_in_day)
+            self.days = self.start_days + (int(timestamp) // self.seconds_in_day)
 
     def long_count_date(self):
         """ Returns long count date string """
         days = self.days
 
-        cur_baktun = days / self.baktun
+        cur_baktun = days // self.baktun
         days = days % self.baktun
 
-        cur_katun = days / self.katun
+        cur_katun = days // self.katun
         days = days % self.katun
 
-        cur_tun = days / self.tun
+        cur_tun = days // self.tun
         days = days % self.tun
 
-        cur_winal = days / self.winal
+        cur_winal = days // self.winal
         days = days % self.winal
 
         cur_kin = days
 
-        longcount_string = "%d.%d.%d.%d.%d" % ( cur_baktun, 
+        longcount_string = "{0}.{1}.{2}.{3}.{4}".format( cur_baktun, 
                                                 cur_katun,
                                                 cur_tun,
                                                 cur_winal,
@@ -176,7 +180,7 @@ class MayaDate:
         tzolkin_13 = (days + 4) % 13
         tzolkin_20 = (days - 1) % 20
 
-        tzolkin_string = "%d %s" % (tzolkin_13, self.tzolkin_days[tzolkin_20])
+        tzolkin_string = "{0} {1}".format(tzolkin_13, self.tzolkin_days[tzolkin_20])
 
         return(tzolkin_string)
 
@@ -190,22 +194,22 @@ class MayaDate:
         days = self.days
 
         haab_day = (days - 17) % 365
-        haab_month = haab_day / 20
+        haab_month = haab_day // 20
         haab_day_of_month = haab_day % 20
 
-        haab_string =  "%d %s" % (haab_day_of_month, self.haab_months[haab_month])
+        haab_string =  "{0} {1}".format(haab_day_of_month, self.haab_months[haab_month])
 
         return(haab_string)
 
     def date(self):
-        return("%s, %s, %s" % ( self.long_count_date(), self.tzolkin_date(), self.haab_date() ))
+        return("{0}, {1}, {2}".format( self.long_count_date(), self.tzolkin_date(), self.haab_date() ))
 
 try: 
     timestamp = sys.argv[1]
 except:
-    print "Please specify timestamp in the argument"
+    print("Please specify timestamp in the argument")
     sys.exit(1)
 
 maya_date = MayaDate(timestamp)
-print maya_date.date()
+print(maya_date.date())
 
