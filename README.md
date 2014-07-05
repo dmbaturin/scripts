@@ -17,3 +17,9 @@ File list:
 
 * maya_timestamp.py
     Converts UNIX timestamp to the Maya calendar date, like "./maya_timestamp.py $(date +%s)".
+
+* gost94sums.sh
+    Creates GOST94 sums file in format analogous to the usual md5sums or sha1sums.
+
+* otpgen.pl
+    Generates a PDF or plain text one time pad.
