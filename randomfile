@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Pick a random file from a directory
+# This file is public domain.
+
+TARGET_DIR=$1
+
+if [ -z $TARGET_DIR ]; then
+    echo "Usage: $0 <target dir>"
+    exit 1
+fi
+
+files=$(find $TARGET_DIR -maxdepth 1 -name '*.*')
+FILES=($files)
+
+echo ${FILES[$(($RANDOM%${#FILES[@]}))]}
