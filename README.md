@@ -23,3 +23,6 @@ File list:
 
 * otpgen.pl
     Generates a PDF or plain text one time pad.
+
+* irclogmailer.sh
+    Emails yesterday irssi logs to watchers
