@@ -7,16 +7,16 @@ File list:
 
 * installdate.sh
     Attempts to determine installation date
-    of a Linux, FreeBSD, Mac OS X and Solaris system.
+    of a Linux, FreeBSD, Mac OS X, or Solaris system.
 
 * motto_clock.sh
-    Adds a time related motto to date output.
+    Adds a time themed motto to date output.
 
 * ceval.pl
-    Compiles and executes C one-liners with gcc (like ./ceval.pl 'int a = 5 % 2 == 0 ? 1 : 0; printf("%d\n", a);'
+    Compiles and executes C one-liners with gcc. Usage example: ./ceval.pl 'int a = 5 % 2 == 0 ? 1 : 0; printf("%d\n", a);'
 
 * maya_timestamp.py
-    Converts UNIX timestamp to the Maya calendar date, like "./maya_timestamp.py $(date +%s)".
+    Converts UNIX timestamp to the Maya calendar date. Usage example: "./maya_timestamp.py $(date +%s)".
 
 * gost94sums.sh
     Creates GOST94 sums file in format analogous to the usual md5sums or sha1sums.
@@ -25,4 +25,13 @@ File list:
     Generates a PDF or plain text one time pad.
 
 * irclogmailer.sh
-    Emails yesterday irssi logs to watchers
+    Emails yesterday irssi logs to watchers.
+
+* randomfile
+    Picks a random file from given directory.
+
+* sshforget
+    Removes a line from SSH known_hosts.
+
+* all2pdf.sh
+    gunzips and converts all DVI and PS files in a directory to PDF.
