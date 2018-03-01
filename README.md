@@ -5,6 +5,9 @@ Miscellaneous scripts
 
 File list:
 
+* usg-config-export.py
+    Exports specified sections of a Ubiquiti Unified Service Gateway config into JSON
+
 * installdate.sh
     Attempts to determine installation date
     of a Linux, FreeBSD, Mac OS X, or Solaris system.
