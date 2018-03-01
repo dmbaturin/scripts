@@ -49,11 +49,10 @@ def dict_get(d, key_list):
     return v
 
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: {0} <config paths>".format(sys.argv[0]))
-        print("Example: {0} \'service dhcp-server\' \'system login\'".format(sys.argv[0]))
-        sys.exit(1)
+if len(sys.argv) < 2:
+    print("Usage: {0} <config paths>".format(sys.argv[0]))
+    print("Example: {0} \'service dhcp-server\' \'system login\'".format(sys.argv[0]))
+    sys.exit(1)
 
 try:
     p = subprocess.Popen("mca-ctrl -t dump-cfg", stdout=subprocess.PIPE, shell=True)
