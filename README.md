@@ -38,3 +38,7 @@ File list:
 
 * all2pdf.sh
     gunzips and converts all DVI and PS files in a directory to PDF.
+
+* phabricator-relnotes.py
+    Automatically retrieves release notes from a Phabricator query
+    and displays in HTML or plain text.
