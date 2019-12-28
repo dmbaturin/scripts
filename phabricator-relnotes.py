@@ -19,7 +19,7 @@ import urllib.request
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--query-key", type=str, help="Query key", required=True)
 parser.add_argument("-t", "--api-token", type=str, help="API token", required=True)
-parser.add_argument("-f", "--format", type=str, default="html", help="Output format (html or plain)")
+parser.add_argument("-f", "--format", type=str, default="html", help="Output format (html, rst, md, or plain)")
 parser.add_argument("phabricator_url", type=str, help="Phabricator URL")
 
 args = parser.parse_args()
@@ -32,8 +32,16 @@ template_html = """<tr>
 
 template_plain = "T{id}\t{title}"
 
+template_rst = "* `T{id} <{base_url}/T{id}>`_ {title}"
+
+template_md = "* [T{id}]({base_url}/T{id}) {title}"
+
 if args.format == 'html':
     template = template_html
+elif args.format == 'rst':
+    template = template_rst
+elif args.format == 'md':
+    template = template_md
 else:
     template = template_plain
 
