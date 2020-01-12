@@ -42,3 +42,8 @@ File list:
 * phabricator-relnotes.py
     Automatically retrieves release notes from a Phabricator query
     and displays in HTML or plain text.
+
+* ocacc.py
+    Obsessive-compulsive acronym capitalization checker.
+    Checks abbreviation/acronym capitalization style against
+    a file that lists correctly capitalized versions one per line.
