@@ -11,6 +11,7 @@
 #     and generate yourself a token. It goes to -t/--api-token
 #  5. Now run phabricator-relnotes.py -t <API key> -q queryKey https://phabricator.example.com
 
+import re
 import sys
 import json
 import argparse
@@ -20,6 +21,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--query-key", type=str, help="Query key", required=True)
 parser.add_argument("-t", "--api-token", type=str, help="API token", required=True)
 parser.add_argument("-f", "--format", type=str, default="html", help="Output format (html, rst, md, or plain)")
+parser.add_argument("-c", "--constraint", type=str, help="Search constraint", required=False)
 parser.add_argument("phabricator_url", type=str, help="Phabricator URL")
 
 args = parser.parse_args()
@@ -53,4 +55,17 @@ with urllib.request.urlopen(query_url, request_data) as f:
     data = resp["result"]["data"]
 
 for t in data:
-  print(template.format(id=t["id"], title=t["fields"]["name"], base_url=args.phabricator_url))
+    if args.constraint:
+        data = re.split(r'\s*=\s*', args.constraint)
+        if len(data) != 2:
+            raise ValueError("Malformed constraint: {}".format(args.constraint))
+        else:
+            field = data[0]
+            value = data[1]
+            if not (t["fields"][field] == value):
+                continue
+
+    if args.format == 'json':
+        print(json.dumps(t))
+    else:
+        print(template.format(id=t["id"], title=t["fields"]["name"], base_url=args.phabricator_url))
