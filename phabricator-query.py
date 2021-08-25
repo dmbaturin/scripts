@@ -9,7 +9,7 @@
 #  3. Take the query key part out of that URL
 #  4. Go to https://phabricator.example.com/settings/user/<user>/page/apitokens/
 #     and generate yourself a token. It goes to -t/--api-token
-#  5. Now run phabricator-relnotes.py -t <API key> -q queryKey https://phabricator.example.com
+#  5. Now run phabricator-query.py -t <API key> -q <queryKey> https://phabricator.example.com
 
 import re
 import sys
