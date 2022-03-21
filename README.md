@@ -39,11 +39,15 @@ File list:
 * all2pdf.sh
     gunzips and converts all DVI and PS files in a directory to PDF.
 
-* phabricator-relnotes.py
-    Automatically retrieves release notes from a Phabricator query
-    and displays in HTML or plain text.
+* phabricator-quwey.py
+    Automatically retrieves task data from a Phabricator query
+    and displays it in HTML or plain text.
 
 * ocacc.py
     Obsessive-compulsive acronym capitalization checker.
     Checks abbreviation/acronym capitalization style against
     a file that lists correctly capitalized versions one per line.
+
+* vyos-release-notes.py
+    Generates release notes from Phabricator. It uses custom fields from the VyOS phabricator instance,
+    so it's only really useful for VyOS. You can adapt it to your own project, but you are on your own there. ;)
