@@ -39,7 +39,7 @@ File list:
 * all2pdf.sh
     gunzips and converts all DVI and PS files in a directory to PDF.
 
-* phabricator-quwey.py
+* phabricator-query.py
     Automatically retrieves task data from a Phabricator query
     and displays it in HTML or plain text.
 
