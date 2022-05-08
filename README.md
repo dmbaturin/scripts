@@ -5,6 +5,10 @@ Miscellaneous scripts
 
 File list:
 
+* nproc.py
+
+    Like `nproc` from GNU coreutils, but returns the number of physical cores (while `nproc` does not adjust for Hyper-Threading).
+
 * usg-config-export.py
     Exports specified sections of a Ubiquiti Unified Service Gateway config into JSON
 
