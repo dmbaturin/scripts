@@ -13,10 +13,15 @@
 #  2. Fill the search form and run "Search". You will be redirected to a URL like
 #     https://phabricator.vyos.net/maniphest/query/<queryKey>/#R
 #     Copy the <queryKey> part. That will be your -q/--query-key argument
+#
+#     Make sure to set a milestone tag and "Status: any closed status".
 #  3. Take the query key part out of that URL
 #  4. Go to https://phabricator.vyos.net/settings/user/<user>/page/apitokens/
 #     and generate yourself a token. It goes to -t/--api-token
 #  5. Now run vyos-release-notes.py -t <API key> -q <queryKey>
+#
+#  NB: Before you post release notes, check the "Other resolved issues" category.
+#      A lot of time those issues tend to be un-categorized.
 
 import re
 import sys
@@ -25,27 +30,54 @@ import copy
 import urllib
 import argparse
 
+import jinja2
 import urllib3
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--query-key", type=str, help="Query key", required=True)
 parser.add_argument("-t", "--api-token", type=str, help="API token", required=True)
+parser.add_argument("-f", "--format", type=str, help="Output format", required=True)
 
 args = parser.parse_args()
 
 ## Templates
-template = """
-  <li><a href="{base_url}/T{id}">T{id}</a>: {title}</li>
+
+# HTML template for blog posts
+html_template = """
+{% for category in changelog %}
+{%- if category.tasks %}
+<h3>{{category.name}}</h3>
+<ul>
+  {%- for t in category.tasks %}
+  <li><a href="{{base_url}}/T{{t.id}}">T{{t.id}}</a>: {{t.fields.name}}</li>
+  {%- endfor %}
+</ul>
+{%- endif %}
+{% endfor %}
 """
+
+# Phriction (Phabricator's wiki) for release notes
+phriction_template = """
+{% for category in changelog %}
+{%- if category.tasks %}
+**{{category.name}}**
+
+{% for t in category.tasks %}
+* T{{t.id}}: {{t.fields.name}}
+{%- endfor %}
+
+{%- endif %}
+{% endfor %}
+"""
+
 
 phabricator_url = "https://phabricator.vyos.net"
 
-def print_tasks(data):
-    for t in data:
-        if t["fields"]["status"]["value"] in ["invalid", "wontfix"]:
-           continue
-
-        print(template.format(id=t["id"], title=t["fields"]["name"], base_url=phabricator_url))
+def is_resolved(task):
+    if task["fields"]["status"]["value"] in ["invalid", "wontfix"]:
+        return False
+    else:
+        return True
 
 def copy_tasks(ts, l, field, func):
     for t in ts:
@@ -62,53 +94,44 @@ resp = http.request(
 resp = json.loads(resp.data)
 data = resp["result"]["data"]
 
-changelog = {
-  "vulnerabilities": [], "breaking": [], "syntax": [], "features": [], "fixes": [], "misc": []
-}
+# Filter out tasks that were closed with a status other than "resolved",
+# like "invalid" or "wontfix".
+data = list(filter(is_resolved, data))
 
-copy_tasks(data, changelog["vulnerabilities"], "custom.issue-type", lambda x: x == "vulnerability")
-copy_tasks(data, changelog["breaking"], "custom.breaking-change", lambda x: x == "syntax-incomp")
-copy_tasks(data, changelog["syntax"], "custom.breaking-change", lambda x: x == "syntax")
-copy_tasks(data, changelog["features"], "custom.issue-type", lambda x: x in ["feature", "improvement"])
-copy_tasks(data, changelog["fixes"], "custom.issue-type", lambda x: x == "bug")
-copy_tasks(data, changelog["misc"], "custom.issue-type", lambda x: x not in ["feature", "improvement", "bug", "vulnerability"])
+# Now categorize the tasks and prepare a changelog datastructure for rendering
+vulnerabilities = []
+breaking_changes = []
+syntax_changes = []
+features = []
+fixes = []
+misc = []
 
-changelog["features"].sort(key=lambda x: x["id"])
-changelog["fixes"].sort(key=lambda x: x["id"])
-data.sort(key=lambda x: x["id"])
+copy_tasks(data, vulnerabilities, "custom.issue-type", lambda x: x == "vulnerability")
+copy_tasks(data, breaking_changes, "custom.breaking-change", lambda x: x == "syntax-incomp")
+copy_tasks(data, syntax_changes, "custom.breaking-change", lambda x: x == "syntax")
+copy_tasks(data, features, "custom.issue-type", lambda x: x in ["feature", "improvement"])
+copy_tasks(data, fixes, "custom.issue-type", lambda x: x == "bug")
+copy_tasks(data, misc, "custom.issue-type", lambda x: x not in ["feature", "improvement", "bug", "vulnerability"])
 
-if changelog["vulnerabilities"]:
-    print("<h3>Security</h3>")
-    print("<ul>")
-    print_tasks(changelog["vulnerabilities"])
-    print("</ul>")
+changelog = [
+  {"name": "Security", "tasks": vulnerabilities},
+  {"name": "Breaking changes", "tasks": breaking_changes},
+  {"name": "Configuration syntax changes (automatically migrated)", "tasks": syntax_changes},
+  {"name": "New features and improvements", "tasks": features},
+  {"name": "Bug fixes", "tasks": fixes},
+  {"name": "Other resolved issues", "tasks": misc}
+]
 
-if changelog["breaking"]:
-    print("<h3>Breaking changes</h3>")
-    print("<ul>")
-    print_tasks(changelog["breaking"])
-    print("</ul>")
+for c in changelog:
+    c["tasks"].sort(key=lambda x: x["id"])
 
-if changelog["syntax"]:
-    print("<h3>Configuration syntax changes (automatically migrated)</h3>")
-    print("<ul>")
-    print_tasks(changelog["syntax"])
-    print("</ul>")
+# Render the changelog
 
-if changelog["features"]:
-    print("<h3>New features and improvements")
-    print("<ul>")
-    print_tasks(changelog["features"])
-    print("</ul>")
+if args.format == "html":
+    tmpl = jinja2.Template(html_template)
+elif args.format == "phriction":
+    tmpl = jinja2.Template(phriction_template)
+else:
+    print(f"""Unsupported output format "{args.format}" """)
 
-if changelog["fixes"]:
-    print("<h3>Bug fixes</h3>")
-    print("<ul>")
-    print_tasks(changelog["fixes"])
-    print("</ul>")
-
-if changelog["misc"]:
-    print("<h3>Other resolved issues</h3>")
-    print("<ul>")
-    print_tasks(changelog["misc"])
-    print("</ul>")
+print(tmpl.render({"changelog": changelog, "base_url": phabricator_url}))
