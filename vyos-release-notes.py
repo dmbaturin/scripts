@@ -22,8 +22,10 @@ import re
 import sys
 import json
 import copy
+import urllib
 import argparse
-import urllib.request
+
+import urllib3
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--query-key", type=str, help="Query key", required=True)
@@ -51,11 +53,14 @@ def copy_tasks(ts, l, field, func):
             l.append(copy.copy(t))
 
 # Retrieve the data
-query_url = "{0}/api/maniphest.search".format(phabricator_url)
-request_data = urllib.parse.urlencode({'api.token': args.api_token, 'queryKey': args.query_key}).encode('ascii')
-with urllib.request.urlopen(query_url, request_data) as f:
-    resp = json.load(f)
-    data = resp["result"]["data"]
+http = urllib3.PoolManager()
+resp = http.request(
+    "POST",
+    f"{phabricator_url}/api/maniphest.search",
+    body=urllib.parse.urlencode({'api.token': args.api_token, 'queryKey': args.query_key}).encode('ascii'),
+    headers={"Content-Type": "application/x-www-form-urlencoded"})
+resp = json.loads(resp.data)
+data = resp["result"]["data"]
 
 changelog = {
   "vulnerabilities": [], "breaking": [], "syntax": [], "features": [], "fixes": [], "misc": []
