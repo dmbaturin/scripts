@@ -24,19 +24,19 @@ though I can't promise that I will actually fix them.
 
 * motto_clock.sh
 
-    Adds a time themed motto to date output.
+    Shows the current time plus a time-themed motto in the style of medieval tower clocks.
 
 * ceval.pl
 
-    Compiles and executes C one-liners with gcc. Usage example: ./ceval.pl 'int a = 5 % 2 == 0 ? 1 : 0; printf("%d\n", a);'
+    Compiles and executes C one-liners with gcc. Usage example: `./ceval.pl 'int a = 5 % 2 == 0 ? 1 : 0; printf("%d\n", a);'`
 
 * maya_timestamp.py
 
-    Converts UNIX timestamp to the Maya calendar date. Usage example: "./maya_timestamp.py $(date +%s)".
+    Converts UNIX timestamp to the Maya calendar date. Usage example: `./maya_timestamp.py $(date +%s)`.
 
 * gost94sums.sh
 
-    Creates GOST94 sums file in format analogous to the usual md5sums or sha1sums.
+    Creates GOST94 sums file in format analogous to the usual md5sums or sha1sums (may not work with new OpenSSL versions).
 
 * otpgen.pl
 
