@@ -73,3 +73,7 @@ though I can't promise that I will actually fix them.
 
     Generates release notes from Phabricator. It uses custom fields from the VyOS phabricator instance,
     so it's only really useful for VyOS. You can adapt it to your own project, but you are on your own there. ;)
+
+* cve2bibtex.py
+
+    Converts CVE 5.0 JSON format to a BibLaTeX @online macro for citing.
