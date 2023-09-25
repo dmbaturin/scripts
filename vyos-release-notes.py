@@ -33,6 +33,13 @@ import argparse
 import jinja2
 import urllib3
 
+import ssl
+
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-q", "--query-key", type=str, help="Query key", required=True)
 parser.add_argument("-t", "--api-token", type=str, help="API token", required=True)
@@ -70,8 +77,9 @@ phriction_template = """
 {% endfor %}
 """
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
-phabricator_url = "https://phabricator.vyos.net"
+phabricator_url = "https://vyos.dev"
 
 def is_resolved(task):
     if task["fields"]["status"]["value"] in ["invalid", "wontfix"]:
@@ -85,7 +93,7 @@ def copy_tasks(ts, l, field, func):
             l.append(copy.copy(t))
 
 # Retrieve the data
-http = urllib3.PoolManager()
+http = urllib3.PoolManager(assert_hostname=False, assert_fingerprint=False)
 resp = http.request(
     "POST",
     f"{phabricator_url}/api/maniphest.search",
