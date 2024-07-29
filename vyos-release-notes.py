@@ -77,6 +77,20 @@ phriction_template = """
 {% endfor %}
 """
 
+# reStructuredText for Sphinx docs
+rst_template = """
+{% for category in changelog %}
+{%- if category.tasks %}
+**{{category.name}}**
+
+{% for t in category.tasks %}
+- T{{t.id}}: {{t.fields.name}}
+{%- endfor %}
+
+{%- endif %}
+{% endfor %}
+"""
+
 ssl._create_default_https_context = ssl._create_unverified_context
 
 phabricator_url = "https://vyos.dev"
@@ -139,6 +153,8 @@ if args.format == "html":
     tmpl = jinja2.Template(html_template)
 elif args.format == "phriction":
     tmpl = jinja2.Template(phriction_template)
+elif args.format == "rst":
+    tmpl = jinja2.Template(rst_template)
 else:
     print(f"""Unsupported output format "{args.format}" """)
 
