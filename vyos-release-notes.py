@@ -56,7 +56,7 @@ html_template = """
 <h3>{{category.name}}</h3>
 <ul>
   {%- for t in category.tasks %}
-  <li><a href="{{base_url}}/T{{t.id}}">T{{t.id}}</a>: {{t.fields.name}}</li>
+  <li>{{t.fields.name}} (<a href="{{base_url}}/T{{t.id}}">T{{t.id}}</a>).</li>
   {%- endfor %}
 </ul>
 {%- endif %}
@@ -70,7 +70,7 @@ phriction_template = """
 **{{category.name}}**
 
 {% for t in category.tasks %}
-* T{{t.id}}: {{t.fields.name}}
+* {{t.fields.name}} (T{{t.id}}).
 {%- endfor %}
 
 {%- endif %}
@@ -84,7 +84,7 @@ rst_template = """
 **{{category.name}}**
 
 {% for t in category.tasks %}
-- T{{t.id}}: {{t.fields.name}}
+- {{t.fields.name}} (T{{t.id}}).
 {%- endfor %}
 
 {%- endif %}
